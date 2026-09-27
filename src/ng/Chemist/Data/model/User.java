@@ -1,40 +1,18 @@
 package ng.Chemist.Data.model;
 
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Data
+@Document
 public class User {
+    @Id
+    private String id;
+
     private String userName;
     private String passWord;
     private String fullName;
-    private boolean isLoggedIn = false;
+    private boolean isLoggedIn;
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-
-    public void setLoggedIn(boolean loggedIn) {
-        isLoggedIn = loggedIn;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public boolean isLoggedIn() {
-        return isLoggedIn;
-    }
 }

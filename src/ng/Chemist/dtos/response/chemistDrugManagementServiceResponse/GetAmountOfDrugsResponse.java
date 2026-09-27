@@ -1,13 +1,9 @@
 package ng.Chemist.dtos.response.chemistDrugManagementServiceResponse;
 
+import lombok.Data;
+
+@Data
 public class GetAmountOfDrugsResponse {
     private String message;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

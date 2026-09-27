@@ -1,87 +1,52 @@
 package ng.Chemist.controllers;
 
 import ng.Chemist.Data.repositories.DrugRepository;
-import ng.Chemist.Data.repositories.DrugRepositoryImpl;
 import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.*;
 import ng.Chemist.dtos.response.chemistDrugManagementServiceResponse.*;
 import ng.Chemist.service.ChemistDrugManagementService;
-import ng.Chemist.service.ChemistDrugManagementServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
+@RestController
+@RequestMapping("/DrugManagement")
 public class ChemistDrugManagementServiceController {
-    private final static DrugRepository drugRepository = new DrugRepositoryImpl();
-    private final static ChemistDrugManagementService chemistDrugService = new ChemistDrugManagementServiceImpl(drugRepository);
 
-    public AddDrugResponse addDrug (int id, String brandName, String genericName, String strength, String dosage, String manufacturer, String batchNumber, LocalDate manufactureDate, LocalDate expiryDate, int price, int quantityInStock){
-        AddDrugRequest addDrugRequest = new AddDrugRequest();
-        addDrugRequest.setBatchNumber(batchNumber);
-        addDrugRequest.setBrandName(brandName);
-        addDrugRequest.setDosage(dosage);
-        addDrugRequest.setStrength(strength);
-        addDrugRequest.setQuantityInStock(quantityInStock);
-        addDrugRequest.setPrice(price);
-        addDrugRequest.setId(id);
-        addDrugRequest.setGenericName(genericName);
-        addDrugRequest.setManufacturer(manufacturer);
-        addDrugRequest.setManufactureDate(manufactureDate);
-        addDrugRequest.setExpiryDate(expiryDate);
+    @Autowired
+    private ChemistDrugManagementService chemistDrugService;
 
-        AddDrugResponse response = chemistDrugService.addDrug(addDrugRequest);
-        return response;
+    @PostMapping("/AddDrug")
+    public AddDrugResponse addDrug (@RequestBody AddDrugRequest addDrugRequest){
+        return chemistDrugService.addDrug(addDrugRequest);
     }
 
-    public UpdateDrugResponse updateDrug(int id, String brandName, String genericName, String strength, String dosage, String manufacturer, String batchNumber, LocalDate manufactureDate, LocalDate expiryDate, int price, int quantityInStock){
-        UpdateDrugRequest updateDrugRequest = new UpdateDrugRequest();
-        updateDrugRequest.setBatchNumber(batchNumber);
-        updateDrugRequest.setBrandName(brandName);
-        updateDrugRequest.setDosage(dosage);
-        updateDrugRequest.setStrength(strength);
-        updateDrugRequest.setQuantityInStock(quantityInStock);
-        updateDrugRequest.setPrice(price);
-        updateDrugRequest.setId(id);
-        updateDrugRequest.setGenericName(genericName);
-        updateDrugRequest.setManufacturer(manufacturer);
-        updateDrugRequest.setManufactureDate(manufactureDate);
-        updateDrugRequest.setExpiryDate(expiryDate);
-
-        UpdateDrugResponse response = chemistDrugService.updateDrug(updateDrugRequest);
-        return response;
+    @PostMapping("/UpdateDrug")
+    public UpdateDrugResponse updateDrug(@RequestBody UpdateDrugRequest updateDrugRequest){
+        return chemistDrugService.updateDrug(updateDrugRequest);
     }
 
-    public ViewDrugDetailResponse viewDrugDetail(String brandName){
-        ViewDrugDetailRequest viewDrugDetailRequest = new ViewDrugDetailRequest();
-        viewDrugDetailRequest.setBrandName(brandName);
-
-        ViewDrugDetailResponse response = chemistDrugService.viewDrugDetail(viewDrugDetailRequest);
-        return response;
+    @GetMapping("/ViewDrugDetails")
+    public ViewDrugDetailResponse viewDrugDetail(@RequestBody ViewDrugDetailRequest viewDrugDetailRequest){
+        return chemistDrugService.viewDrugDetail(viewDrugDetailRequest);
     }
 
-    public SearchDrugResponse searchDrug(String drugName){
-        SearchDrugRequest searchDrugRequest = new SearchDrugRequest();
-        searchDrugRequest.setDrugName(drugName);
-
-        SearchDrugResponse response = chemistDrugService.searchDrug(searchDrugRequest);
-        return response;
+    @GetMapping("/SearchDrug")
+    public SearchDrugResponse searchDrug(@RequestBody SearchDrugRequest searchDrugRequest){
+        return chemistDrugService.searchDrug(searchDrugRequest);
     }
 
-    public DeleteDrugResponse deleteDrug(int id){
-        DeleteDrugRequest deleteDrugRequest = new DeleteDrugRequest();
-        deleteDrugRequest.setDrugId(id);
-
-        DeleteDrugResponse response = chemistDrugService.deleteDrug(deleteDrugRequest);
-        return response;
+    @DeleteMapping("/DeleteDrug")
+    public DeleteDrugResponse deleteDrug(@RequestBody DeleteDrugRequest deleteDrugRequest){
+        return chemistDrugService.deleteDrug(deleteDrugRequest);
     }
 
-//    public DeleteAllDrugResponse deleteAllDrug(String userResponse){
-//        DeleteAllDrugRequest deleteAllDrugRequest =  new DeleteAllDrugRequest();
-//        if(userResponse.equalsIgnoreCase("yes")){
-//            deleteAllDrugRequest.deleteAllSwitch(true);
-//            DeleteDrugResponse response = chemistDrugService.deleteAllDrug(deleteAllDrugRequest);
-//        }
-//
-//        DeleteDrugResponse res
-//    }
+    @DeleteMapping("/DeleteAllDrug")
+    public DeleteAllDrugResponse deleteAllDrug(@RequestBody DeleteAllDrugRequest deleteAllDrugRequest){
+        return chemistDrugService.deleteAllDrug(deleteAllDrugRequest);
+    }
+
+    @GetMapping("/GetAmountOfDrugs")
+    public GetAmountOfDrugsResponse getAmountOfDrugs(@RequestBody GetAmountOfDrugsRequest getAmountOfDrugsRequest){
+        return chemistDrugService.getAmountOfDrugs(getAmountOfDrugsRequest);
+    }
 
 }

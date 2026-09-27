@@ -2,7 +2,6 @@ package ng.Chemist.service;
 
 import ng.Chemist.Data.model.User;
 import ng.Chemist.Data.repositories.UserRepository;
-import ng.Chemist.Data.repositories.UserRepositoryImpl;
 import ng.Chemist.dtos.request.authServiceRequest.LogOutRequest;
 import ng.Chemist.dtos.request.authServiceRequest.LoginUserRequest;
 import ng.Chemist.dtos.request.authServiceRequest.RegisterUserRequest;
@@ -10,23 +9,34 @@ import ng.Chemist.dtos.response.authServiceResponse.LoginUserResponse;
 import ng.Chemist.dtos.response.authServiceResponse.LogoutUserResponse;
 import ng.Chemist.dtos.response.authServiceResponse.RegisterUserResponse;
 import ng.Chemist.exceptions.AuthServiceExceptions.*;
-import ng.Chemist.util.authServiceUtil.AccountName;
+import ng.Chemist.security.JwtService;
+import ng.Chemist.security.SecurityConfig;
 import ng.Chemist.util.authServiceUtil.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 import static ng.Chemist.util.authServiceUtil.Password.checkForDigit;
 import static ng.Chemist.util.authServiceUtil.Password.checkForUpperCase;
-
+@Service
 public class AuthServiceImpl {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
     private UserRepository userRepository ;
 
-    public  AuthServiceImpl(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
-
     public RegisterUserResponse register (RegisterUserRequest request){
-        RegisterUserResponse response = new RegisterUserResponse();
         User user = Mapper.mapToUser(request);
-        if(AccountName.checkIfItIsBlank(user.getUserName(), user.getFullName()) == true){
+        if(userRepository.findByUserName(request.getUserName()).isPresent() == true){
+            throw new InvalidUserNameException("User Name Already Exist");
+        }
+        if(user.getUserName().isBlank() == true || user.getPassWord().isBlank() == true || user.getFullName().isBlank() == true){
             throw new InvalidUserNameException("Invalid Name");
         }
         if(user.getPassWord().length() < 8){
@@ -38,34 +48,50 @@ public class AuthServiceImpl {
         if(checkForDigit(user.getPassWord()) == false){
             throw new NoDigitIncludedException("Password Must Contain Digit");
         }
-        userRepository.save(user);
+        String hashed = passwordEncoder.encode(user.getPassWord());
+        user.setPassWord(hashed);
+        User savedUser = userRepository.save(user);
 
-        response.setMessage("Registration Successful");
+        RegisterUserResponse response = new RegisterUserResponse();
+        response.setFullName(savedUser.getFullName());
+        response.setUserId(savedUser.getId());
+        response.setUserName(savedUser.getUserName());
+        response.setLoggedIn(savedUser.isLoggedIn());
         return response;
     }
 
     public LoginUserResponse login (LoginUserRequest request){
         LoginUserResponse response = new LoginUserResponse();
-        User user = userRepository.findByName(request.getUserName());
-        if(user == null){
+        Optional<User> user = userRepository.findByUserName(request.getUserName());
+        if(user.isEmpty()){
             throw new AccountNotFoundException("Invalid Username or Password");
         }
-        if(!user.getPassWord().equals(request.getPassword())){
+        if(!passwordEncoder.matches(request.getPassword(), user.get().getPassWord())){
             throw new WrongPasswordException("Invalid Username or Password");
         }
-        user.setLoggedIn(true);
-        response.setMessage("Login successful");
+        user.get().setLoggedIn(true);
+        userRepository.save(user.get());
+
+        User savedUser = user.get();
+
+        response.setUserName(user.get().getUserName());
+        response.setFullName(user.get().getFullName());
+        response.setJwtId(jwtService.createJwt(savedUser));
+
         return response;
     }
 
     public LogoutUserResponse logout(LogOutRequest request) {
-        LogoutUserResponse reponse = new LogoutUserResponse();
-        User user = userRepository.findByName(request.getUserName());
-        if(user == null ) {
+        LogoutUserResponse response = new LogoutUserResponse();
+        Optional<User> user = userRepository.findByUserName(request.getUserName());
+        if(user.isEmpty()) {
             throw new AccountNotFoundException("Account not found");
         }
-        user.setLoggedIn(false);
-        reponse.setMessage("Logout successful");
-        return reponse;
+        user.get().setLoggedIn(false);
+
+        User savedUser = userRepository.save(user.get());
+
+        response.setLoggedIn(savedUser.isLoggedIn());
+        return response;
     }
 }

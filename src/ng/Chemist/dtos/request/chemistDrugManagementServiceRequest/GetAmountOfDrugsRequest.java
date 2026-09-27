@@ -1,13 +1,9 @@
 package ng.Chemist.dtos.request.chemistDrugManagementServiceRequest;
 
+import lombok.Data;
+
+@Data
 public class GetAmountOfDrugsRequest {
     private boolean requestSwitch;
 
-    public void setRequestSwitch(boolean requestSwitch){
-        this.requestSwitch = requestSwitch;
-    }
-
-    public boolean getRequestSwitch(){
-        return this.requestSwitch;
-    }
 }

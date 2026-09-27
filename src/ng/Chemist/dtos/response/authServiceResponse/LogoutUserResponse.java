@@ -1,13 +1,8 @@
 package ng.Chemist.dtos.response.authServiceResponse;
 
+import lombok.Data;
+
+@Data
 public class LogoutUserResponse {
-    private String message;
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
+    private boolean isLoggedIn;
 }

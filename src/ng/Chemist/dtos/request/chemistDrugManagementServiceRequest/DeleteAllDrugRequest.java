@@ -1,13 +1,9 @@
 package ng.Chemist.dtos.request.chemistDrugManagementServiceRequest;
 
+import lombok.Data;
+
+@Data
 public class DeleteAllDrugRequest {
-    boolean deleteSwitch = false;
+    String option;
 
-    public void deleteAllSwitch(boolean deleteSwitch){
-        this.deleteSwitch = deleteSwitch;
-    }
-
-    public boolean getSwitch(){
-        return this.deleteSwitch;
-    }
 }

@@ -1,13 +1,8 @@
 package ng.Chemist.dtos.request.chemistDrugManagementServiceRequest;
 
+import lombok.Data;
+
+@Data
 public class DeleteDrugRequest {
     private int id;
-
-    public void setDrugId(int id) {
-        this.id = id;
-    }
-
-    public int getDrugId() {
-        return id;
-    }
 }

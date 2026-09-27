@@ -1,13 +1,9 @@
 package ng.Chemist.dtos.request.chemistDrugManagementServiceRequest;
 
+import lombok.Data;
+
+@Data
 public class SearchDrugRequest {
-    private String drug;
-
-    public void setDrugName(String drugName) {
-        this.drug = drugName;
-    }
-
-    public String getDrugName() {
-        return drug;
-    }
+    private String id;
+    private String genericName;
 }

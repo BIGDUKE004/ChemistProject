@@ -1,11 +1,11 @@
 package ng.Chemist.Data.repositories;
 
 import ng.Chemist.Data.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface UserRepository {
-    User save(User user);
-    void delete(User user);
-    void deleteAll();
-    long count();
-    User findByName(String name);
+import java.util.Optional;
+
+public interface UserRepository extends MongoRepository<User, String> {
+    Optional<User> findByUserName(String userName);;
 }

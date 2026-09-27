@@ -1,10 +1,9 @@
-package ng.chemist.serviceTest;
+package ng.Chemist.serviceTest;
 
 import ng.Chemist.dtos.request.authServiceRequest.LogOutRequest;
 import ng.Chemist.dtos.request.authServiceRequest.LoginUserRequest;
 import ng.Chemist.dtos.request.authServiceRequest.RegisterUserRequest;
 import ng.Chemist.Data.repositories.UserRepository;
-import ng.Chemist.Data.repositories.UserRepositoryImpl;
 import ng.Chemist.dtos.response.authServiceResponse.LoginUserResponse;
 import ng.Chemist.dtos.response.authServiceResponse.LogoutUserResponse;
 import ng.Chemist.dtos.response.authServiceResponse.RegisterUserResponse;
@@ -12,18 +11,21 @@ import ng.Chemist.exceptions.AuthServiceExceptions.*;
 import ng.Chemist.service.AuthServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 public class AuthServiceImplTest {
 
+    @Autowired
     private AuthServiceImpl authentication;
+    @Autowired
+    private UserRepository userRepository;
     @BeforeEach
-
     public void setUp(){
-        UserRepository users = new UserRepositoryImpl();
-        authentication = new AuthServiceImpl(users);
-        users.deleteAll();
+    userRepository.deleteAll();
     }
 
     @Test
@@ -33,7 +35,7 @@ public class AuthServiceImplTest {
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
         RegisterUserResponse response = authentication.register(user);
-        assertEquals("Registration Successful", response.getMessage());
+        assertEquals("Elijah Miracle", response.getFullName());
     }
 
     @Test
@@ -88,13 +90,13 @@ public class AuthServiceImplTest {
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
         RegisterUserResponse response = authentication.register(user);
-        assertEquals("Registration Successful", response.getMessage());
+        assertEquals("Elijah Miracle", response.getFullName());
 
         LoginUserRequest userCredentials  = new LoginUserRequest();
         userCredentials.setUserName("Elijah");
         userCredentials.setPassword("BIGDuke004");
         LoginUserResponse login = authentication.login(userCredentials);
-        assertEquals("Login successful", login.getMessage());
+        assertEquals("Elijah Miracle", login.getFullName());
     }
 
     @Test
@@ -104,7 +106,7 @@ public class AuthServiceImplTest {
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
         RegisterUserResponse response = authentication.register(user);
-        assertEquals("Registration Successful", response.getMessage());
+        assertEquals("Elijah Miracle", response.getFullName());
 
         LoginUserRequest userCredentials  = new LoginUserRequest();
         userCredentials.setUserName("Benjamin");
@@ -119,7 +121,7 @@ public class AuthServiceImplTest {
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
         RegisterUserResponse response = authentication.register(user);
-        assertEquals("Registration Successful", response.getMessage());
+        assertEquals("Elijah Miracle", response.getFullName());
 
         LoginUserRequest userCredentials  = new LoginUserRequest();
         userCredentials.setUserName("Elijah");
@@ -134,17 +136,17 @@ public class AuthServiceImplTest {
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
         RegisterUserResponse response = authentication.register(user);
-        assertEquals("Registration Successful", response.getMessage());
+        assertEquals("Elijah Miracle", response.getFullName());
 
         LoginUserRequest userCredentials  = new LoginUserRequest();
         userCredentials.setUserName("Elijah");
         userCredentials.setPassword("BIGDuke004");
         LoginUserResponse login = authentication.login(userCredentials);
-        assertEquals("Login successful", login.getMessage());
+        assertEquals("Elijah Miracle", login.getFullName());
 
         LogOutRequest request = new LogOutRequest();
         request.setUserName("Elijah");
         LogoutUserResponse log0utResponse = authentication.logout(request);
-        assertEquals("Logout successful", log0utResponse.getMessage());
+        assertFalse(log0utResponse.isLoggedIn());
     }
 }

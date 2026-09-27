@@ -1,7 +1,5 @@
 package ng.Chemist.controllers;
 
-import ng.Chemist.Data.repositories.UserRepository;
-import ng.Chemist.Data.repositories.UserRepositoryImpl;
 import ng.Chemist.dtos.request.authServiceRequest.LogOutRequest;
 import ng.Chemist.dtos.request.authServiceRequest.LoginUserRequest;
 import ng.Chemist.dtos.request.authServiceRequest.RegisterUserRequest;
@@ -9,36 +7,28 @@ import ng.Chemist.dtos.response.authServiceResponse.LoginUserResponse;
 import ng.Chemist.dtos.response.authServiceResponse.LogoutUserResponse;
 import ng.Chemist.dtos.response.authServiceResponse.RegisterUserResponse;
 import ng.Chemist.service.AuthServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/Authorization")
 public class AuthServiceController {
-    private final static UserRepository userRepository = new UserRepositoryImpl();
-    private final static AuthServiceImpl service = new AuthServiceImpl(userRepository);
+    @Autowired
+    private AuthServiceImpl service;
 
-    public String registerUser(String userName, String fullName, String password){
-        RegisterUserRequest request = new RegisterUserRequest();
-        request.setFullName(fullName);
-        request.setPassWord(password);
-        request.setUserName(userName);
-
-        RegisterUserResponse response = service.register(request);
-        return response.getMessage();
+    @PostMapping("/Register")
+    public RegisterUserResponse registerUser(@RequestBody RegisterUserRequest request){
+        return service.register(request);
     }
 
-    public String loginUser(String userName, String password){
-        LoginUserRequest loginUserRequest = new LoginUserRequest();
-        loginUserRequest.setUserName(userName);
-        loginUserRequest.setPassword(password);
-
-        LoginUserResponse response = service.login(loginUserRequest);
-        return response.getMessage();
+    @PostMapping("/Login")
+    public LoginUserResponse loginUser(@RequestBody LoginUserRequest request){
+        return service.login(request);
     }
 
-    public String logout(String userName){
-        LogOutRequest request = new LogOutRequest();
-        request.setUserName(userName);
-
-        LogoutUserResponse repsonse = service.logout(request);
-        return repsonse.getMessage();
+    @PostMapping("/Logout")
+    public LogoutUserResponse logout(@RequestBody LogOutRequest request){
+        return service.logout(request);
     }
 }
 

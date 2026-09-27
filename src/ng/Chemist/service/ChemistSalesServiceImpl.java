@@ -1,32 +1,30 @@
 package ng.Chemist.service;
 
-//import ng.Chemist.Data.model.DispenseDrug;
 import ng.Chemist.Data.model.DispensedDrugsRecord;
-//import ng.Chemist.Data.model.Drug;
+import ng.Chemist.Data.model.Drug;
 import ng.Chemist.Data.model.User;
-import ng.Chemist.Data.repositories.DispensedDrugsRecordRepositoryImpl;
+import ng.Chemist.Data.repositories.DispensedDrugsRecordRepository;
 import ng.Chemist.Data.repositories.DrugRepository;
 import ng.Chemist.Data.repositories.UserRepository;
-import ng.Chemist.Data.repositories.UserRepositoryImpl;
 import ng.Chemist.dtos.request.chemistSalesServiceRequest.sellDrugRequest;
 import ng.Chemist.dtos.response.chemistSalesServiceResponse.sellDrugResponse;
 import ng.Chemist.exceptions.ChemistSalesManagementExceptions.DrugNotFoundException;
-//import ng.Chemist.exceptions.ChemistSalesManagementExceptions.InsufficientStockException;
 import ng.Chemist.exceptions.ChemistSalesManagementExceptions.UserNotLoggedInException;
-//import ng.Chemist.util.authServiceUtil.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ChemistSalesServiceImpl implements ChemistSalesService {
+    @Autowired
     private DrugRepository drugRepository;
+    @Autowired
     private UserRepository userRepository;
-
-    public ChemistSalesServiceImpl(DrugRepository drugRepository, UserRepository userRepository){
-        this.drugRepository = drugRepository;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private DispensedDrugsRecordRepository dispensedDrugsRecordRepository;
 
     @Override
     public sellDrugResponse sellDrug(sellDrugRequest request) {
@@ -36,49 +34,51 @@ public class ChemistSalesServiceImpl implements ChemistSalesService {
 
         int totalQuantity = 0;
 
-        for(int counter = 0; counter < request.getDrug().size(); counter++){
+        for(int counter = 0; counter < request.getDrugs().size(); counter++){
 
-            boolean check = this.drugRepository.drugExistence(request.getDrug().get(counter).getDrug(), request.getDrug().get(counter).getDosage());
+            boolean check = this.drugRepository.existsByBrandNameAndDosage(request.getDrugs().get(counter).getDrugName(), request.getDrugs().get(counter).getDosage());
 
-            if(check && this.drugRepository.findById(request.getDrug().get(counter).getId()).getQuantityInStock() > request.getDrug().get(counter).getQuantity()){
+            Optional<Drug> quantity =
+                    drugRepository.findById(request.getDrugs().get(counter).getId());
+
+            if(check && quantity.isPresent() && quantity.get().getQuantityInStock() > request.getDrugs().get(counter).getQuantity()){
 
                 BigDecimal lineTotal;
 
-                lineTotal = this.drugRepository.findById(request.getDrug().get(counter).getId()).getPrice().multiply(BigDecimal.valueOf(request.getDrug().get(counter).getQuantity()));
+                lineTotal = this.drugRepository.findById(request.getDrugs().get(counter).getId()).get().getPrice().multiply(BigDecimal.valueOf(request.getDrugs().get(counter).getQuantity()));
 
-                String drugMessage = "%d x %s x %s = %s".formatted(request.getDrug().get(counter).getQuantity(), request.getDrug().get(counter).getDrug(), request.getDrug().get(counter).getDosage(), lineTotal);
+                String drugMessage = "%d x %s x %s = %s".formatted(request.getDrugs().get(counter).getQuantity(), request.getDrugs().get(counter).getDrugName(), request.getDrugs().get(counter).getDosage(), lineTotal);
 
                 dispenseDrugs.add(drugMessage);
 
                 total = total.add(lineTotal);
 
-                totalQuantity += request.getDrug().get(counter).getQuantity();
+                totalQuantity += request.getDrugs().get(counter).getQuantity();
 
-                this.drugRepository.viewDrugInformation(request.getDrug().get(counter).getDrug()).setQuantityInStock(this.drugRepository.viewDrugInformation(request.getDrug().get(counter).getDrug()).getQuantityInStock() - request.getDrug().get(counter).getQuantity());
+                this.drugRepository.findByBrandName(request.getDrugs().get(counter).getDrugName()).setQuantityInStock(this.drugRepository.findByBrandName(request.getDrugs().get(counter).getDrugName()).getQuantityInStock() - request.getDrugs().get(counter).getQuantity());
 
             } else {
                 throw new DrugNotFoundException("Could not find drug");
             }
 
         }
-        User user = this.userRepository.findByName(request.getName());
-        if (!user.isLoggedIn()) {
+        Optional<User> user = this.userRepository.findByUserName(request.getName());
+        if (!user.get().isLoggedIn()) {
             throw new UserNotLoggedInException("Please log in your account");
         }
         int id = 101;
         DispensedDrugsRecord record = new DispensedDrugsRecord();
         record.setSaleId(id);
         record.setDateAndTime(LocalDateTime.now());
-        record.setUser(user.getUserName());
-        record.setDrug(dispenseDrugs);
+        record.setUser(user.get().getUserName());
+        record.setDrugs(dispenseDrugs);
         record.setQuantitySold(totalQuantity);
         record.setAmount(total);
 
-        DispensedDrugsRecordRepositoryImpl dispensedDrugsRecordRepository = new DispensedDrugsRecordRepositoryImpl();
-        dispensedDrugsRecordRepository.addCurrentSales(record);
+        dispensedDrugsRecordRepository.save(record);
 
         sellDrugResponse salesResponse = new sellDrugResponse();
-        salesResponse.setMessage(record);
+        salesResponse.setRecord(record);
         id++;
         return salesResponse;
     }

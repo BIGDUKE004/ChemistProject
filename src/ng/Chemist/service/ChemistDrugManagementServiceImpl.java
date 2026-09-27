@@ -5,10 +5,17 @@ import ng.Chemist.Data.repositories.DrugRepository;
 import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.*;
 import ng.Chemist.dtos.response.chemistDrugManagementServiceResponse.*;
 import ng.Chemist.exceptions.ChemistDrugManagementServiceException.FillInEveryInformationException;
+import ng.Chemist.exceptions.repositoriesException.DrugDoesNotExistException;
 import ng.Chemist.util.authServiceUtil.Mapper;
 import ng.Chemist.util.ChemistDrugManagementServiceUtil.IsEmptyCheck;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Service
 public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementService{
+    @Autowired
     private DrugRepository drugRepository;
 
     public ChemistDrugManagementServiceImpl(DrugRepository drugRepository){
@@ -22,7 +29,7 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
         if(checkForEmptyInformation == true){
             throw new FillInEveryInformationException("Please fill in all information");
         }
-        this.drugRepository.add(drug);
+        this.drugRepository.save(drug);
         response.setMessage("Drug added successfully");
         return response;
     }
@@ -30,15 +37,32 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
     @Override
     public UpdateDrugResponse updateDrug(UpdateDrugRequest request) {
         UpdateDrugResponse response = new UpdateDrugResponse();
-        Drug drug = Mapper.mapToDrugUpdate(request);
-        this.drugRepository.updateDrug(drug, request.getId());
-        response.setMessage("Drug information updated successfully");
-        return response;
+        Optional<Drug> drug = drugRepository.findById(request.getId());
+        if(drug.isEmpty()) {
+            throw new DrugDoesNotExistException("Drug not found");
+        } else {
+            drug.get().setId(request.getId());
+            drug.get().setQuantityInStock(request.getQuantityInStock());
+            drug.get().setDosage(request.getDosage());
+            drug.get().setStrength(request.getStrength());
+            drug.get().setExpiryDate(request.getExpiryDate());
+            drug.get().setManufactureDate(request.getManufactureDate());
+            drug.get().setGenericName(request.getGenericName());
+            drug.get().setBatchNumber(request.getBatchNumber());
+            drug.get().setBrandName(request.getBrandName());
+
+            this.drugRepository.save(drug.get());
+
+            response.setMessage("Drug information updated successfully");
+            return response;
+        }
+//        response.setMessage("");
+//        return response;
     }
 
     @Override
     public ViewDrugDetailResponse viewDrugDetail(ViewDrugDetailRequest request) {
-        Drug drug = this.drugRepository.SearchByName(request.getBrandName());
+        Drug drug = this.drugRepository.searchByBrandName(request.getBrandName());
         ViewDrugDetailResponse response = new ViewDrugDetailResponse();
         response.setMessage(drug.toString());
         return response;
@@ -47,7 +71,11 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
     @Override
     public SearchDrugResponse searchDrug(SearchDrugRequest request) {
         SearchDrugResponse searchDrugResponse = new SearchDrugResponse();
-        Drug drug = this.drugRepository.SearchByName(request.getDrugName());
+        Drug drug = this.drugRepository.searchByGenericName(request.getGenericName());
+        if (drug == null) {
+            searchDrugResponse.setMessage("Drug not found");
+            return searchDrugResponse;
+        }
         String message = drug.getGenericName() + " " + drug.getStrength() + " " + drug.getDosage();
         searchDrugResponse.setMessage(message);
         return searchDrugResponse;
@@ -56,7 +84,11 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
     @Override
     public DeleteDrugResponse deleteDrug(DeleteDrugRequest request) {
         DeleteDrugResponse deleteDrugResponse = new DeleteDrugResponse();
-        this.drugRepository.delete(request.getDrugId());
+        Drug drug = Mapper.mapToDeleteDrugRequestToDrug(request);
+        if(this.drugRepository.findById(drug.getId()).isEmpty()){
+            throw new DrugDoesNotExistException("Drug not found");
+        }
+        this.drugRepository.delete(drug);
         deleteDrugResponse.setMessage("Drug deleted successfully");
         return deleteDrugResponse;
     }
@@ -64,7 +96,11 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
     @Override
     public DeleteAllDrugResponse deleteAllDrug(DeleteAllDrugRequest request) {
         DeleteAllDrugResponse deleteAllDrugResponse = new DeleteAllDrugResponse();
-        this.drugRepository.deleteAll(request.getSwitch());
+        if(request.getOption().equalsIgnoreCase("yes")){
+            this.drugRepository.deleteAll();
+        } else {
+            throw new IllegalArgumentException("Wrong Command, Type 'Yes'");
+        }
         deleteAllDrugResponse.setMessage("Drug deleted successfully");
         return deleteAllDrugResponse;
     }
@@ -72,7 +108,7 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
     @Override
     public GetAmountOfDrugsResponse getAmountOfDrugs(GetAmountOfDrugsRequest request) {
         GetAmountOfDrugsResponse getAmountOfDrugsResponse = new GetAmountOfDrugsResponse();
-        if(request.getRequestSwitch() == true){
+        if(request.isRequestSwitch() == true){
             long count = this.drugRepository.count();
             String message = "The Amount Of Drugs is " + count;
             getAmountOfDrugsResponse.setMessage(message);

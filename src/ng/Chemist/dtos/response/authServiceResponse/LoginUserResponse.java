@@ -1,13 +1,11 @@
 package ng.Chemist.dtos.response.authServiceResponse;
 
+import lombok.Data;
+
+@Data
 public class LoginUserResponse {
-    private String message;
+    private String userName;
+    private String fullName;
+    private String jwtId;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

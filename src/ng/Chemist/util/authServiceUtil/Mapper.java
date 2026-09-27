@@ -4,8 +4,11 @@ import ng.Chemist.Data.model.DispenseDrug;
 import ng.Chemist.Data.model.Drug;
 import ng.Chemist.dtos.request.authServiceRequest.RegisterUserRequest;
 import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.AddDrugRequest;
+import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.DeleteDrugRequest;
 import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.UpdateDrugRequest;
 import ng.Chemist.Data.model.User;
+
+import java.math.BigDecimal;
 
 
 public class Mapper {
@@ -25,7 +28,7 @@ public class Mapper {
         drug.setDosage(request.getDosage());
         drug.setStrength(request.getStrength());
         drug.setQuantityInStock(request.getQuantityInStock());
-        drug.setPrice(request.getPrice().intValue());
+        drug.setPrice(BigDecimal.valueOf(request.getPrice()));
         drug.setId(request.getId());
         drug.setGenericName(request.getGenericName());
         drug.setManufacturer(request.getManufacturer());
@@ -41,7 +44,7 @@ public class Mapper {
         drug.setDosage(request.getDosage());
         drug.setStrength(request.getStrength());
         drug.setQuantityInStock(request.getQuantityInStock());
-        drug.setPrice(request.getPrice().intValue());
+        drug.setPrice(BigDecimal.valueOf(request.getPrice()));
         drug.setId(request.getId());
         drug.setGenericName(request.getGenericName());
         drug.setManufacturer(request.getManufacturer());
@@ -51,4 +54,9 @@ public class Mapper {
     }
 
 
+    public static Drug mapToDeleteDrugRequestToDrug(DeleteDrugRequest request) {
+        Drug drug = new Drug();
+        drug.setId(request.getId());
+        return drug;
+    }
 }

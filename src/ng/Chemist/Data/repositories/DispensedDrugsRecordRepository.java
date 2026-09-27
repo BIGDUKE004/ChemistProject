@@ -1,14 +1,11 @@
 package ng.Chemist.Data.repositories;
 
 import ng.Chemist.Data.model.DispensedDrugsRecord;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.time.LocalDateTime;
 
-public interface DispensedDrugsRecordRepository {
-    void addCurrentSales(DispensedDrugsRecord record);
-    DispensedDrugsRecord viewRecord(LocalDateTime dateAndTime);
-    boolean updateRecord(DispensedDrugsRecord record);
-    void deleteRecord(int id);
-    void deleteAll();
-    int countRecord();
+public interface DispensedDrugsRecordRepository extends MongoRepository<DispensedDrugsRecord, String>{
+
 }
