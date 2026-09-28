@@ -1,14 +1,14 @@
 package ng.Chemist.serviceTest;
 
-import ng.Chemist.dtos.request.authServiceRequest.LogOutRequest;
-import ng.Chemist.dtos.request.authServiceRequest.LoginUserRequest;
-import ng.Chemist.dtos.request.authServiceRequest.RegisterUserRequest;
-import ng.Chemist.Data.repositories.UserRepository;
-import ng.Chemist.dtos.response.authServiceResponse.LoginUserResponse;
-import ng.Chemist.dtos.response.authServiceResponse.LogoutUserResponse;
-import ng.Chemist.dtos.response.authServiceResponse.RegisterUserResponse;
-import ng.Chemist.exceptions.AuthServiceExceptions.*;
-import ng.Chemist.service.AuthServiceImpl;
+import Java.ng.Chemist.dtos.request.authServiceRequest.LogOutRequest;
+import Java.ng.Chemist.dtos.request.authServiceRequest.LoginUserRequest;
+import Java.ng.Chemist.dtos.request.authServiceRequest.RegisterUserRequest;
+import Java.ng.Chemist.Data.repositories.UserRepository;
+import Java.ng.Chemist.dtos.response.authServiceResponse.LoginUserResponse;
+import Java.ng.Chemist.dtos.response.authServiceResponse.LogoutUserResponse;
+import Java.ng.Chemist.dtos.response.authServiceResponse.RegisterUserResponse;
+import Java.ng.Chemist.exceptions.AuthServiceExceptions.*;
+import Java.ng.Chemist.service.AuthServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
