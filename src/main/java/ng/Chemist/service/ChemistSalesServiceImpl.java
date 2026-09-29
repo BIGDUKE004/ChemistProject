@@ -9,15 +9,18 @@ import ng.Chemist.Data.repositories.UserRepository;
 import ng.Chemist.dtos.request.chemistSalesServiceRequest.sellDrugRequest;
 import ng.Chemist.dtos.response.chemistSalesServiceResponse.sellDrugResponse;
 import ng.Chemist.exceptions.ChemistSalesManagementExceptions.DrugNotFoundException;
+import ng.Chemist.exceptions.ChemistSalesManagementExceptions.InsufficientStockException;
 import ng.Chemist.exceptions.ChemistSalesManagementExceptions.UserNotLoggedInException;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Component
 public class ChemistSalesServiceImpl implements ChemistSalesService {
     @Autowired
     private DrugRepository drugRepository;
@@ -27,6 +30,7 @@ public class ChemistSalesServiceImpl implements ChemistSalesService {
     private DispensedDrugsRecordRepository dispensedDrugsRecordRepository;
 
     @Override
+    @Transactional
     public sellDrugResponse sellDrug(sellDrugRequest request) {
         ArrayList<String> dispenseDrugs = new ArrayList<>();
 
@@ -34,41 +38,46 @@ public class ChemistSalesServiceImpl implements ChemistSalesService {
 
         int totalQuantity = 0;
 
-        for(int counter = 0; counter < request.getDrugs().size(); counter++){
-
-            boolean check = this.drugRepository.existsByBrandNameAndDosage(request.getDrugs().get(counter).getDrugName(), request.getDrugs().get(counter).getDosage());
-
-            Optional<Drug> quantity =
-                    drugRepository.findById(request.getDrugs().get(counter).getId());
-
-            if(check && quantity.isPresent() && quantity.get().getQuantityInStock() > request.getDrugs().get(counter).getQuantity()){
-
-                BigDecimal lineTotal;
-
-                lineTotal = this.drugRepository.findById(request.getDrugs().get(counter).getId()).get().getPrice().multiply(BigDecimal.valueOf(request.getDrugs().get(counter).getQuantity()));
-
-                String drugMessage = "%d x %s x %s = %s".formatted(request.getDrugs().get(counter).getQuantity(), request.getDrugs().get(counter).getDrugName(), request.getDrugs().get(counter).getDosage(), lineTotal);
-
-                dispenseDrugs.add(drugMessage);
-
-                total = total.add(lineTotal);
-
-                totalQuantity += request.getDrugs().get(counter).getQuantity();
-
-                this.drugRepository.findByBrandName(request.getDrugs().get(counter).getDrugName()).setQuantityInStock(this.drugRepository.findByBrandName(request.getDrugs().get(counter).getDrugName()).getQuantityInStock() - request.getDrugs().get(counter).getQuantity());
-
-            } else {
-                throw new DrugNotFoundException("Could not find drug");
-            }
-
-        }
         Optional<User> user = this.userRepository.findByUserName(request.getName());
+        if (user.isEmpty()) {
+            throw new UserNotLoggedInException("User not found");
+        }
         if (!user.get().isLoggedIn()) {
             throw new UserNotLoggedInException("Please log in your account");
         }
-        int id = 101;
+
+        for (int counter = 0; counter < request.getDrugs().size(); counter++) {
+
+            Optional<Drug> foundDrug =
+                    drugRepository.findById(request.getDrugs().get(counter).getId());
+
+            if (foundDrug.isEmpty()
+                    || !foundDrug.get().getBrandName().equals(request.getDrugs().get(counter).getDrugName())
+                    || !foundDrug.get().getDosage().equals(request.getDrugs().get(counter).getDosage())) {
+                throw new DrugNotFoundException("Could not find drug");
+            }
+
+            Drug drug = foundDrug.get();
+
+            if (drug.getQuantityInStock() < request.getDrugs().get(counter).getQuantity()) {
+                throw new InsufficientStockException("Not enough stock for " + request.getDrugs().get(counter).getDrugName());
+            }
+
+            BigDecimal lineTotal = drug.getPrice().multiply(BigDecimal.valueOf(request.getDrugs().get(counter).getQuantity()));
+
+            String drugMessage = "%d x %s x %s = %s".formatted(request.getDrugs().get(counter).getQuantity(), request.getDrugs().get(counter).getDrugName(), request.getDrugs().get(counter).getDosage(), lineTotal);
+
+            dispenseDrugs.add(drugMessage);
+
+            total = total.add(lineTotal);
+
+            totalQuantity += request.getDrugs().get(counter).getQuantity();
+
+            drug.setQuantityInStock(drug.getQuantityInStock() - request.getDrugs().get(counter).getQuantity());
+            this.drugRepository.save(drug);
+        }
+
         DispensedDrugsRecord record = new DispensedDrugsRecord();
-        record.setSaleId(id);
         record.setDateAndTime(LocalDateTime.now());
         record.setUser(user.get().getUserName());
         record.setDrugs(dispenseDrugs);
@@ -79,7 +88,7 @@ public class ChemistSalesServiceImpl implements ChemistSalesService {
 
         sellDrugResponse salesResponse = new sellDrugResponse();
         salesResponse.setRecord(record);
-        id++;
         return salesResponse;
     }
+
 }

@@ -5,13 +5,12 @@ import org.springframework.data.annotation.Id;
 
 @Data
 public class DispenseDrug {
+    @Id
+    private int id;
+
     private String dosage;
     private String batchId;
     private String drugName;
     private int quantity;
-
-    @Id
-    private int id;
-
 
 }
