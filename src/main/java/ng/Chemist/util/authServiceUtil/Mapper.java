@@ -52,10 +52,4 @@ public class Mapper {
         return drug;
     }
 
-
-    public static Drug mapToDeleteDrugRequestToDrug(DeleteDrugRequest request) {
-        Drug drug = new Drug();
-        drug.setId(request.getId());
-        return drug;
-    }
 }

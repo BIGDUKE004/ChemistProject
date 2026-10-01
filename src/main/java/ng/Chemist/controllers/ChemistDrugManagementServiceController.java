@@ -33,17 +33,17 @@ public class ChemistDrugManagementServiceController {
     }
 
     @GetMapping("/ViewDrugDetails")
-    public ViewDrugDetailResponse viewDrugDetail(@RequestParam ViewDrugDetailRequest request){
+    public ViewDrugDetailResponse viewDrugDetail(ViewDrugDetailRequest request){
         return chemistDrugService.viewDrugDetail(request);
     }
 
     @GetMapping("/SearchDrug")
-    public SearchDrugResponse searchDrug(@RequestParam SearchDrugRequest request){
+    public SearchDrugResponse searchDrug(SearchDrugRequest request){
         return chemistDrugService.searchDrug(request);
     }
 
     @DeleteMapping("/DeleteDrug")
-    public DeleteDrugResponse deleteDrug(@RequestParam DeleteDrugRequest request){
+    public DeleteDrugResponse deleteDrug(DeleteDrugRequest request){
         return chemistDrugService.deleteDrug(request);
     }
 

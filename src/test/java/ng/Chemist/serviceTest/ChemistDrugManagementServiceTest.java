@@ -330,7 +330,7 @@ public class ChemistDrugManagementServiceTest {
         assertEquals("Drug added successfully", drugResponse.getMessage());
 
         DeleteDrugRequest deleteDrugRequest = new DeleteDrugRequest();
-        deleteDrugRequest.setId(10000);
+        deleteDrugRequest.setBrandName("DoesNotExist");
         assertThrows(DrugDoesNotExistException.class, () -> service.deleteDrug(deleteDrugRequest));
     }
 
