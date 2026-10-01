@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class Drug {
     @Id
     private int id;
-
+    private String storeId;
     private String brandName;
     private String genericName;
     private String strength;

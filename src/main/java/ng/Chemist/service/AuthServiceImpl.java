@@ -15,7 +15,8 @@ import ng.Chemist.util.authServiceUtil.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import ng.Chemist.Data.model.Store;
+import ng.Chemist.Data.repositories.StoreRepository;
 import java.util.Optional;
 
 import static ng.Chemist.util.authServiceUtil.Password.checkForDigit;
@@ -30,6 +31,9 @@ public class AuthServiceImpl {
 
     @Autowired
     private UserRepository userRepository ;
+
+    @Autowired
+    private StoreRepository storeRepository;
 
     public RegisterUserResponse register (RegisterUserRequest request){
         User user = Mapper.mapToUser(request);
@@ -48,6 +52,16 @@ public class AuthServiceImpl {
         if(checkForDigit(user.getPassWord()) == false){
             throw new NoDigitIncludedException("Password Must Contain Digit");
         }
+        if(request.getStoreName() == null || request.getStoreName().isBlank()){
+            throw new InvalidUserNameException("Pharmacy name is required");
+        }
+        Store store = storeRepository.findByNameIgnoreCase(request.getStoreName().trim())
+                .orElseGet(() -> {
+                    Store newStore = new Store();
+                    newStore.setName(request.getStoreName().trim());
+                    return storeRepository.save(newStore);
+                });
+        user.setStoreId(store.getId());
         String hashed = passwordEncoder.encode(user.getPassWord());
         user.setPassWord(hashed);
         User savedUser = userRepository.save(user);

@@ -27,7 +27,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5500"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:5500", "https://apothic-orpin.vercel.app"));
+        corsConfiguration.addAllowedOriginPattern("https://*.vercel.app");
         corsConfiguration.setAllowedMethods(List.of("POST", "GET", "DELETE", "PUT"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
 

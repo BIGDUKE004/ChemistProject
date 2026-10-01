@@ -8,8 +8,10 @@ import java.util.Optional;
 
 public interface DrugRepository extends MongoRepository<Drug, Integer> {
     boolean existsByBrandNameAndDosage(String brandName, String dosage);
-    Optional<Drug> findByBrandNameIgnoreCase(String brandName);
-    List<Drug> findByGenericNameContainingIgnoreCase(String genericName);
-    void deleteByBrandNameIgnoreCase(String brandName);
+    Optional<Drug> findByBrandNameIgnoreCaseAndStoreId(String brandName, String storeId);
+    List<Drug> findByGenericNameContainingIgnoreCaseAndStoreId(String genericName, String storeId);
+    List<Drug> findByStoreId(String storeId);
+    void deleteByBrandNameIgnoreCaseAndStoreId(String brandName, String storeId);
+    void deleteByStoreId(String storeId);
+    long countByStoreId(String storeId);
 }
-
