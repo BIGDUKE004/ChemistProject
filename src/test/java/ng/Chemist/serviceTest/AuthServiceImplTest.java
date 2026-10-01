@@ -34,6 +34,7 @@ public class AuthServiceImplTest {
         user.setUserName("Elijah");
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah Miracle", response.getFullName());
     }
@@ -89,6 +90,7 @@ public class AuthServiceImplTest {
         user.setUserName("Elijah");
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah Miracle", response.getFullName());
 
@@ -105,6 +107,7 @@ public class AuthServiceImplTest {
         user.setUserName("Elijah");
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah Miracle", response.getFullName());
 
@@ -120,6 +123,7 @@ public class AuthServiceImplTest {
         user.setUserName("Elijah");
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah Miracle", response.getFullName());
 
@@ -135,6 +139,7 @@ public class AuthServiceImplTest {
         user.setUserName("Elijah");
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah Miracle", response.getFullName());
 

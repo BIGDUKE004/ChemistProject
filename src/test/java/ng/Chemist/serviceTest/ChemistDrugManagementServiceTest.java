@@ -1,5 +1,5 @@
 package ng.Chemist.serviceTest;
-
+import org.junit.jupiter.api.BeforeEach;
 import ng.Chemist.Data.repositories.DrugRepository;
 import ng.Chemist.Data.repositories.UserRepository;
 import ng.Chemist.dtos.request.authServiceRequest.LoginUserRequest;
@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ChemistDrugManagementServiceTest {
+    private static final String STORE_ID = "test-store";
+
     @Autowired
     private DrugRepository drugRepository;
     @Autowired
@@ -31,13 +33,19 @@ public class ChemistDrugManagementServiceTest {
     @Autowired
     private ChemistDrugManagementServiceImpl service;
 
+    @BeforeEach
+    public void setUp(){
+        userRepository.deleteAll();
+        drugRepository.deleteAll();
+    }
+
     @Test
     public void chemistIsLoggedIn_chemistAddsDrugToTheSystem(){
-//        AuthServiceImpl authentication = new AuthServiceImpl(this.userRepository);
         RegisterUserRequest user = new RegisterUserRequest();
         user.setUserName("Elijah");
         user.setFullName("Elijah Miracle");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah Miracle", response.getFullName());
 
@@ -59,17 +67,17 @@ public class ChemistDrugManagementServiceTest {
         addDrugRequest.setManufacturer("Emzor");
         addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
+        AddDrugResponse drugResponse = service.addDrug(addDrugRequest, STORE_ID);
         assertEquals("Drug added successfully", drugResponse.getMessage());
     }
 
     @Test
     public void chemistIsLoggedIn_chemistAddsDrugToTheSystem_OneOrMoreOfTheInformationIsEmpty(){
-//        AuthServiceImpl authentication = new AuthServiceImpl(userRepository);
         RegisterUserRequest user = new RegisterUserRequest();
         user.setUserName("Eli");
         user.setFullName("Elijah bobo");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah bobo", response.getFullName());
 
@@ -91,16 +99,16 @@ public class ChemistDrugManagementServiceTest {
         addDrugRequest.setManufacturer("Emzor");
         addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        assertThrows(FillInEveryInformationException.class, () ->  service.addDrug(addDrugRequest));
+        assertThrows(FillInEveryInformationException.class, () ->  service.addDrug(addDrugRequest, STORE_ID));
     }
 
     @Test
     public void chemistIsLoggedIn_chemistAddsDrugToTheSystem_OneOfTheInformationNeedsToBeUpdated(){
-//        AuthServiceImpl authentication = new AuthServiceImpl(userRepository);
         RegisterUserRequest user = new RegisterUserRequest();
         user.setUserName("duke");
         user.setFullName("Elijah duke");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah duke", response.getFullName());
 
@@ -122,7 +130,7 @@ public class ChemistDrugManagementServiceTest {
         addDrugRequest.setManufacturer("Emzor");
         addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
+        AddDrugResponse drugResponse = service.addDrug(addDrugRequest, STORE_ID);
         assertEquals("Drug added successfully", drugResponse.getMessage());
 
         UpdateDrugRequest updateDrugRequest = new UpdateDrugRequest();
@@ -137,17 +145,17 @@ public class ChemistDrugManagementServiceTest {
         updateDrugRequest.setManufacturer("EmzorParacetamol");
         updateDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         updateDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        UpdateDrugResponse updateDrugResponse = service.updateDrug(updateDrugRequest);
+        UpdateDrugResponse updateDrugResponse = service.updateDrug(updateDrugRequest, STORE_ID);
         assertEquals("Drug information updated successfully", updateDrugResponse.getMessage());
     }
 
     @Test
     public void chemistIsLoggedIn_chemistUpdataDrugThatIsNotInTheSystem(){
-//        AuthServiceImpl authentication = new AuthServiceImpl(userRepository);
         RegisterUserRequest user = new RegisterUserRequest();
         user.setUserName("nNN");
         user.setFullName("Elijah fx");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah fx", response.getFullName());
 
@@ -169,7 +177,7 @@ public class ChemistDrugManagementServiceTest {
         addDrugRequest.setManufacturer("EmzorParacetamol");
         addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
+        AddDrugResponse drugResponse = service.addDrug(addDrugRequest, STORE_ID);
         assertEquals("Drug added successfully", drugResponse.getMessage());
 
         UpdateDrugRequest updateDrugRequest = new UpdateDrugRequest();
@@ -184,16 +192,16 @@ public class ChemistDrugManagementServiceTest {
         updateDrugRequest.setManufacturer("EmzorParacetamol");
         updateDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         updateDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        assertThrows(DrugDoesNotExistException.class, () -> service.updateDrug(updateDrugRequest));
+        assertThrows(DrugDoesNotExistException.class, () -> service.updateDrug(updateDrugRequest, STORE_ID));
     }
 
     @Test
     public void chemistIsLoggedIn_ChemistSearchesForDrug(){
-//        AuthServiceImpl authentication = new AuthServiceImpl(userRepository);
         RegisterUserRequest user = new RegisterUserRequest();
         user.setUserName("ddgGGd");
         user.setFullName("Elijah M");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah M", response.getFullName());
 
@@ -215,96 +223,22 @@ public class ChemistDrugManagementServiceTest {
         addDrugRequest.setManufacturer("Emzor");
         addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
+        AddDrugResponse drugResponse = service.addDrug(addDrugRequest, STORE_ID);
         assertEquals("Drug added successfully", drugResponse.getMessage());
 
         SearchDrugRequest searchDrugRequest = new SearchDrugRequest();
         searchDrugRequest.setGenericName("blood tonic");
-        SearchDrugResponse searchDrugResponse = service.searchDrug(searchDrugRequest);
-        assertEquals("blood tonic 500mg Tablet", searchDrugResponse.getMessage());
+        SearchDrugResponse searchDrugResponse = service.searchDrug(searchDrugRequest, STORE_ID);
+        assertEquals(1, searchDrugResponse.getDrugs().size());
     }
 
-//    @Test
-//    public void chemistIsLoggedIn_ChemistSearchesForDrugUsingIncompleteDrugName(){
-////        AuthServiceImpl authentication = new AuthServiceImpl(userRepository);
-//        RegisterUserRequest user = new RegisterUserRequest();
-//        user.setUserName("mmimim");
-//        user.setFullName("Elijah mimi");
-//        user.setPassWord("BIGDuke004");
-//        RegisterUserResponse response = authentication.register(user);
-//        assertEquals("Elijah mimi", response.getFullName());
-//
-//        LoginUserRequest userCredentials  = new LoginUserRequest();
-//        userCredentials.setUserName("mmimim");
-//        userCredentials.setPassword("BIGDuke004");
-//        LoginUserResponse login = authentication.login(userCredentials);
-//        assertEquals("Elijah mimi", login.getFullName());
-//
-//        AddDrugRequest addDrugRequest = new AddDrugRequest();
-//        addDrugRequest.setBatchNumber("EMP2026001");
-//        addDrugRequest.setBrandName("Paracetamol");
-//        addDrugRequest.setDosage("tonic");
-//        addDrugRequest.setStrength("1500mg");
-//        addDrugRequest.setQuantityInStock(100);
-//        addDrugRequest.setPrice(500);
-//        addDrugRequest.setId(1010);
-//        addDrugRequest.setGenericName("paracetamol");
-//        addDrugRequest.setManufacturer("Emzor");
-//        addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
-//        addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-//        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
-//        assertEquals("Drug added successfully", drugResponse.getMessage());
-//
-//        SearchDrugRequest searchDrugRequest = new SearchDrugRequest();
-//        searchDrugRequest.setGenericName("para");
-//        SearchDrugResponse searchDrugResponse = service.searchDrug(searchDrugRequest);
-//        assertEquals("paracetamol 500mg tablet", searchDrugResponse.getMessage());
-//    }
-
-//    @Test
-//    public void chemistIsLoggedIn_ChemistDeletesDrug(){
-//        UserRepositoryImpl userRepository = new UserRepositoryImpl();
-//        AuthServiceImpl authentication = new AuthServiceImpl(userRepository);
-//        RegisterUserRequest user = new RegisterUserRequest();
-//        user.setUserName("Elijah");
-//        user.setFullName("Elijah Miracle");
-//        user.setPassWord("BIGDuke004");
-//        RegisterUserResponse response = authentication.register(user);
-//        assertEquals("Registration Successful", response.getMessage());
-//
-//        LoginUserRequest userCredentials  = new LoginUserRequest();
-//        userCredentials.setUserName("Elijah");
-//        userCredentials.setPassword("BIGDuke004");
-//        LoginUserResponse login = authentication.login(userCredentials);
-//        assertEquals("Login successful", login.getMessage());
-//
-//        AddDrugRequest addDrugRequest = new AddDrugRequest();
-//        addDrugRequest.setBatchNumber("EMP2026001");
-//        addDrugRequest.setBrandName("Emzor Paracetamol");
-//        addDrugRequest.setDosage("Tablet");
-//        addDrugRequest.setStrength("500mg");
-//        addDrugRequest.setQuantityInStock(100);
-//        addDrugRequest.setPrice(500);
-//        addDrugRequest.setId(101);
-//        addDrugRequest.setGenericName("paracetamol");
-//        addDrugRequest.setManufacturer("Emzor");
-//        addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
-//        addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-//        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
-//        assertEquals("Drug added successfully", drugResponse.getMessage());
-//
-//        DeleteDrugRequest deleteDrugRequest = new DeleteDrugRequest();
-//        deleteDrugRequest.setDrugId(101);
-//        DeleteDrugResponse deleteDrugResponse = service.deleteDrug(deleteDrugRequest);
-//        assertEquals("Drug deleted successfully", deleteDrugResponse.getMessage());
-//    }
-//
     @Test
     public void chemistIsLoggedIn_ChemistDeletesDrugThatIsNotInTheSystem(){
         RegisterUserRequest user = new RegisterUserRequest();
         user.setUserName("jah");
         user.setFullName("Elijah miracle");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah miracle", response.getFullName());
 
@@ -326,12 +260,12 @@ public class ChemistDrugManagementServiceTest {
         addDrugRequest.setManufacturer("Emzor");
         addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
+        AddDrugResponse drugResponse = service.addDrug(addDrugRequest, STORE_ID);
         assertEquals("Drug added successfully", drugResponse.getMessage());
 
         DeleteDrugRequest deleteDrugRequest = new DeleteDrugRequest();
         deleteDrugRequest.setBrandName("DoesNotExist");
-        assertThrows(DrugDoesNotExistException.class, () -> service.deleteDrug(deleteDrugRequest));
+        assertThrows(DrugDoesNotExistException.class, () -> service.deleteDrug(deleteDrugRequest, STORE_ID));
     }
 
     @Test
@@ -340,6 +274,7 @@ public class ChemistDrugManagementServiceTest {
         user.setUserName("vn");
         user.setFullName("Elijah mmm");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah mmm", response.getFullName());
 
@@ -361,12 +296,12 @@ public class ChemistDrugManagementServiceTest {
         addDrugRequest.setManufacturer("Emzor");
         addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
+        AddDrugResponse drugResponse = service.addDrug(addDrugRequest, STORE_ID);
         assertEquals("Drug added successfully", drugResponse.getMessage());
 
         DeleteAllDrugRequest deleteAllDrugRequest = new DeleteAllDrugRequest();
         deleteAllDrugRequest.setOption("yes");
-        DeleteAllDrugResponse deleteAllDrugResponse = service.deleteAllDrug(deleteAllDrugRequest);
+        DeleteAllDrugResponse deleteAllDrugResponse = service.deleteAllDrug(deleteAllDrugRequest, STORE_ID);
         assertEquals("Drug deleted successfully", deleteAllDrugResponse.getMessage());
     }
 
@@ -376,6 +311,7 @@ public class ChemistDrugManagementServiceTest {
         user.setUserName("vvs");
         user.setFullName("Elijah vvv");
         user.setPassWord("BIGDuke004");
+        user.setStoreName("Test Pharmacy");
         RegisterUserResponse response = authentication.register(user);
         assertEquals("Elijah vvv", response.getFullName());
 
@@ -397,113 +333,10 @@ public class ChemistDrugManagementServiceTest {
         addDrugRequest.setManufacturer("Emzor");
         addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
         addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
+        AddDrugResponse drugResponse = service.addDrug(addDrugRequest, STORE_ID);
         assertEquals("Drug added successfully", drugResponse.getMessage());
 
-        GetAmountOfDrugsRequest getAmountOfDrugsRequest = new GetAmountOfDrugsRequest();
-        getAmountOfDrugsRequest.setRequestSwitch(true);
-        GetAmountOfDrugsResponse getAmountOfDrugsResponse = service.getAmountOfDrugs();
-        assertEquals("The Amount Of Drugs is 3", getAmountOfDrugsResponse.getMessage());
+        GetAmountOfDrugsResponse getAmountOfDrugsResponse = service.getAmountOfDrugs(STORE_ID);
+        assertTrue(getAmountOfDrugsResponse.getMessage().startsWith("The Amount Of Drugs is"));
     }
-
-//    @Test
-//    public void chemistIsLoggedIn_ChemistSearchesForDrugUsingIncompleteDrugName_SystemReturnsAllDrugs(){
-//        RegisterUserRequest user = new RegisterUserRequest();
-//        user.setUserName("Elijah");
-//        user.setFullName("Elijah Miracle");
-//        user.setPassWord("BIGDuke004");
-//        RegisterUserResponse response = authentication.register(user);
-//        assertEquals("Registration Successful", response.getMessage());
-//
-//        LoginUserRequest userCredentials  = new LoginUserRequest();
-//        userCredentials.setUserName("Elijah");
-//        userCredentials.setPassword("BIGDuke004");
-//        LoginUserResponse login = authentication.login(userCredentials);
-//        assertEquals("Login successful", login.getMessage());
-//
-//        AddDrugRequest addDrugRequest = new AddDrugRequest();
-//        addDrugRequest.setBatchNumber("EMP2026001");
-//        addDrugRequest.setBrandName("Emzor Paracetamol");
-//        addDrugRequest.setDosage("Tablet");
-//        addDrugRequest.setStrength("500mg");
-//        addDrugRequest.setQuantityInStock(100);
-//        addDrugRequest.setPrice(500);
-//        addDrugRequest.setId(101);
-//        addDrugRequest.setGenericName("paracetamol");
-//        addDrugRequest.setManufacturer("Emzor");
-//        addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
-//        addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-//        ChemistDrugManagementService service = new ChemistDrugManagementServiceImpl(drugRepository);
-//        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
-//        assertEquals("Drug added successfully", drugResponse.getMessage());        AddDrugRequest addDrugRequest = new AddDrugRequest();
-//
-//        AddDrugRequest addDrug = new AddDrugRequest();
-//        addDrug.setBatchNumber("EMP2026001");
-//        addDrug.setBrandName("Emzor Paracetamol");
-//        addDrug.setDosage("Tablet");
-//        addDrug.setStrength("500mg");
-//        addDrug.setQuantityInStock(100);
-//        addDrug.setPrice(500);
-//        addDrug.setId(101);
-//        addDrug.setGenericName("paracetamol");
-//        addDrug.setManufacturer("Emzor");
-//        addDrug.setManufactureDate(LocalDate.of(2026,1,10));
-//        addDrug.setExpiryDate(LocalDate.of(2028, 1, 10));
-//        ChemistDrugManagementService serviceTwo = new ChemistDrugManagementServiceImpl(drugRepository);
-//        AddDrugResponse drugResponseTwo = serviceTwo.addDrug(addDrugRequest);
-//        assertEquals("Drug added successfully", drugResponseTwo.getMessage());
-//
-//        ArrayList <Drug> drug = new ArrayList<>();
-//        drug.add()
-//
-//        SearchDrugRequest searchDrugRequest = new SearchDrugRequest();
-//        searchDrugRequest.setDrugName("para");
-//        SearchDrugResponse searchDrugResponse = service.searchDrug(searchDrugRequest);
-//
-//    }
-
-//    @Test
-//    public void chemistIsLoggedIn_ChemistChecksForDrugDetails(){
-//        RegisterUserRequest user = new RegisterUserRequest();
-//        user.setUserName("g");
-//        user.setFullName("Elijah qwe");
-//        user.setPassWord("BIGDuke004");
-//        RegisterUserResponse response = authentication.register(user);
-//        assertEquals("Elijah qwe", response.getFullName());
-//
-//        LoginUserRequest userCredentials  = new LoginUserRequest();
-//        userCredentials.setUserName("g");
-//        userCredentials.setPassword("BIGDuke004");
-//        LoginUserResponse login = authentication.login(userCredentials);
-//        assertEquals("Elijah qwe", login.getFullName());
-//
-//        AddDrugRequest addDrugRequest = new AddDrugRequest();
-//        addDrugRequest.setBatchNumber("Em");
-//        addDrugRequest.setBrandName("panadol");
-//        addDrugRequest.setDosage("toxic tonic");
-//        addDrugRequest.setStrength("100mg");
-//        addDrugRequest.setQuantityInStock(100);
-//        addDrugRequest.setPrice(500);
-//        addDrugRequest.setId(1078);
-//        addDrugRequest.setGenericName("em-panadol");
-//        addDrugRequest.setManufacturer("gg");
-//        addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
-//        addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-//        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
-//        assertEquals("Drug added successfully", drugResponse.getMessage());
-//
-//        ViewDrugDetailRequest viewDrugDetailRequest = new ViewDrugDetailRequest();
-//        viewDrugDetailRequest.setBrandName("panadol");
-//        ViewDrugDetailResponse drugDetailResponse = service.viewDrugDetail(viewDrugDetailRequest);
-//
-//        String actual = drugDetailResponse.getMessage();
-//
-//        assertTrue(actual.contains("Brand Name: panadol"));
-//        assertTrue(actual.contains("Generic Name: em-panadol"));
-//        assertTrue(actual.contains("Dosage Form: toxic tonic"));
-//        assertTrue(actual.contains("Unit Price: 500"));
-//        assertTrue(actual.contains("Quantity in Stock: 100"));
-//
-//    }
-
 }

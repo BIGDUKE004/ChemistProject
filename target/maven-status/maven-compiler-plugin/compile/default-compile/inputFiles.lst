@@ -1,9 +1,11 @@
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/model/DispenseDrug.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/model/DispensedDrugsRecord.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/model/Drug.java
+/home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/model/Store.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/model/User.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/repositories/DispensedDrugsRecordRepository.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/repositories/DrugRepository.java
+/home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/repositories/StoreRepository.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Data/repositories/UserRepository.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Main.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/controllers/AuthServiceController.java
@@ -44,6 +46,7 @@
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/exceptions/repositoriesException/DrugDoesNotExistException.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/exceptions/repositoriesException/SalesRecordNotFoundException.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/exceptions/repositoriesException/SameIdException.java
+/home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/security/AuthenticatedUser.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/security/GlobalExceptionHandler.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/security/JwtService.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/security/MyUserDetailsService.java

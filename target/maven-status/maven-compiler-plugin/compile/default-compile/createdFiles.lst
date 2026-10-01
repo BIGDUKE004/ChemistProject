@@ -32,7 +32,10 @@ ng/Chemist/dtos/response/chemistDrugManagementServiceResponse/DeleteDrugResponse
 ng/Chemist/dtos/response/authServiceResponse/LoginUserResponse.class
 ng/Chemist/util/authServiceUtil/Mapper.class
 ng/Chemist/exceptions/ChemistSalesManagementExceptions/UserNotLoggedInException.class
+ng/Chemist/Data/repositories/StoreRepository.class
+ng/Chemist/Data/model/Store.class
 ng/Chemist/security/SecurityConfig.class
+ng/Chemist/security/AuthenticatedUser.class
 ng/Chemist/dtos/request/authServiceRequest/LogOutRequest.class
 ng/Chemist/service/ChemistSalesServiceImpl.class
 ng/Chemist/controllers/ChemistDrugManagementServiceController.class
