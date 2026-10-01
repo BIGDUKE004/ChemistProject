@@ -8,6 +8,7 @@
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/Main.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/controllers/AuthServiceController.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/controllers/ChemistDrugManagementServiceController.java
+/home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/controllers/SalesServiceController.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/dtos/request/authServiceRequest/LogOutRequest.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/dtos/request/authServiceRequest/LoginUserRequest.java
 /home/gamp/IdeaProjects/ChemistManagementSystem/src/main/java/ng/Chemist/dtos/request/authServiceRequest/RegisterUserRequest.java

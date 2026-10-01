@@ -5,6 +5,7 @@ ng/Chemist/dtos/response/chemistDrugManagementServiceResponse/ViewDrugDetailResp
 ng/Chemist/exceptions/repositoriesException/SameIdException.class
 ng/Chemist/controllers/AuthServiceController.class
 ng/Chemist/exceptions/repositoriesException/SalesRecordNotFoundException.class
+ng/Chemist/controllers/SalesServiceController.class
 ng/Chemist/exceptions/ChemistSalesManagementExceptions/InsufficientStockException.class
 ng/Chemist/dtos/request/chemistDrugManagementServiceRequest/DeleteDrugRequest.class
 ng/Chemist/dtos/request/chemistDrugManagementServiceRequest/ViewDrugDetailRequest.class

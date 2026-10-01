@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class DeleteDrugRequest {
-    private int id;
+    private String brandName;
 }

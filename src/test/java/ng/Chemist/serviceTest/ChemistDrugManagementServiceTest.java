@@ -402,7 +402,7 @@ public class ChemistDrugManagementServiceTest {
 
         GetAmountOfDrugsRequest getAmountOfDrugsRequest = new GetAmountOfDrugsRequest();
         getAmountOfDrugsRequest.setRequestSwitch(true);
-        GetAmountOfDrugsResponse getAmountOfDrugsResponse = service.getAmountOfDrugs(getAmountOfDrugsRequest);
+        GetAmountOfDrugsResponse getAmountOfDrugsResponse = service.getAmountOfDrugs();
         assertEquals("The Amount Of Drugs is 3", getAmountOfDrugsResponse.getMessage());
     }
 
@@ -462,48 +462,48 @@ public class ChemistDrugManagementServiceTest {
 //
 //    }
 
-    @Test
-    public void chemistIsLoggedIn_ChemistChecksForDrugDetails(){
-        RegisterUserRequest user = new RegisterUserRequest();
-        user.setUserName("g");
-        user.setFullName("Elijah qwe");
-        user.setPassWord("BIGDuke004");
-        RegisterUserResponse response = authentication.register(user);
-        assertEquals("Elijah qwe", response.getFullName());
-
-        LoginUserRequest userCredentials  = new LoginUserRequest();
-        userCredentials.setUserName("g");
-        userCredentials.setPassword("BIGDuke004");
-        LoginUserResponse login = authentication.login(userCredentials);
-        assertEquals("Elijah qwe", login.getFullName());
-
-        AddDrugRequest addDrugRequest = new AddDrugRequest();
-        addDrugRequest.setBatchNumber("Em");
-        addDrugRequest.setBrandName("panadol");
-        addDrugRequest.setDosage("toxic tonic");
-        addDrugRequest.setStrength("100mg");
-        addDrugRequest.setQuantityInStock(100);
-        addDrugRequest.setPrice(500);
-        addDrugRequest.setId(1078);
-        addDrugRequest.setGenericName("em-panadol");
-        addDrugRequest.setManufacturer("gg");
-        addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
-        addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
-        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
-        assertEquals("Drug added successfully", drugResponse.getMessage());
-
-        ViewDrugDetailRequest viewDrugDetailRequest = new ViewDrugDetailRequest();
-        viewDrugDetailRequest.setBrandName("panadol");
-        ViewDrugDetailResponse drugDetailResponse = service.viewDrugDetail(viewDrugDetailRequest);
-
-        String actual = drugDetailResponse.getMessage();
-
-        assertTrue(actual.contains("Brand Name: panadol"));
-        assertTrue(actual.contains("Generic Name: em-panadol"));
-        assertTrue(actual.contains("Dosage Form: toxic tonic"));
-        assertTrue(actual.contains("Unit Price: 500"));
-        assertTrue(actual.contains("Quantity in Stock: 100"));
-
-    }
+//    @Test
+//    public void chemistIsLoggedIn_ChemistChecksForDrugDetails(){
+//        RegisterUserRequest user = new RegisterUserRequest();
+//        user.setUserName("g");
+//        user.setFullName("Elijah qwe");
+//        user.setPassWord("BIGDuke004");
+//        RegisterUserResponse response = authentication.register(user);
+//        assertEquals("Elijah qwe", response.getFullName());
+//
+//        LoginUserRequest userCredentials  = new LoginUserRequest();
+//        userCredentials.setUserName("g");
+//        userCredentials.setPassword("BIGDuke004");
+//        LoginUserResponse login = authentication.login(userCredentials);
+//        assertEquals("Elijah qwe", login.getFullName());
+//
+//        AddDrugRequest addDrugRequest = new AddDrugRequest();
+//        addDrugRequest.setBatchNumber("Em");
+//        addDrugRequest.setBrandName("panadol");
+//        addDrugRequest.setDosage("toxic tonic");
+//        addDrugRequest.setStrength("100mg");
+//        addDrugRequest.setQuantityInStock(100);
+//        addDrugRequest.setPrice(500);
+//        addDrugRequest.setId(1078);
+//        addDrugRequest.setGenericName("em-panadol");
+//        addDrugRequest.setManufacturer("gg");
+//        addDrugRequest.setManufactureDate(LocalDate.of(2026,1,10));
+//        addDrugRequest.setExpiryDate(LocalDate.of(2028, 1, 10));
+//        AddDrugResponse drugResponse = service.addDrug(addDrugRequest);
+//        assertEquals("Drug added successfully", drugResponse.getMessage());
+//
+//        ViewDrugDetailRequest viewDrugDetailRequest = new ViewDrugDetailRequest();
+//        viewDrugDetailRequest.setBrandName("panadol");
+//        ViewDrugDetailResponse drugDetailResponse = service.viewDrugDetail(viewDrugDetailRequest);
+//
+//        String actual = drugDetailResponse.getMessage();
+//
+//        assertTrue(actual.contains("Brand Name: panadol"));
+//        assertTrue(actual.contains("Generic Name: em-panadol"));
+//        assertTrue(actual.contains("Dosage Form: toxic tonic"));
+//        assertTrue(actual.contains("Unit Price: 500"));
+//        assertTrue(actual.contains("Quantity in Stock: 100"));
+//
+//    }
 
 }

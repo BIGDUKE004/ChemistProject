@@ -1,22 +1,24 @@
 package ng.Chemist.controllers;
 
-import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.*;
-import ng.Chemist.dtos.response.chemistDrugManagementServiceResponse.*;
+import ng.Chemist.Data.model.Drug;
 import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.*;
 import ng.Chemist.dtos.response.chemistDrugManagementServiceResponse.*;
 import ng.Chemist.service.ChemistDrugManagementService;
+import ng.Chemist.service.ChemistDrugManagementServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/DrugManagement")
 public class ChemistDrugManagementServiceController {
 
     @Autowired
-    private ChemistDrugManagementService chemistDrugService;
+    private ChemistDrugManagementServiceImpl chemistDrugService;
 
     @PostMapping("/AddDrug")
-    public AddDrugResponse addDrug (@RequestBody AddDrugRequest addDrugRequest){
+    public AddDrugResponse addDrug(@RequestBody AddDrugRequest addDrugRequest){
         return chemistDrugService.addDrug(addDrugRequest);
     }
 
@@ -25,19 +27,24 @@ public class ChemistDrugManagementServiceController {
         return chemistDrugService.updateDrug(updateDrugRequest);
     }
 
+    @GetMapping("/GetAllDrugs")
+    public List<Drug> getAllDrugs(){
+        return chemistDrugService.getAllDrugs();
+    }
+
     @GetMapping("/ViewDrugDetails")
-    public ViewDrugDetailResponse viewDrugDetail(@RequestBody ViewDrugDetailRequest viewDrugDetailRequest){
-        return chemistDrugService.viewDrugDetail(viewDrugDetailRequest);
+    public ViewDrugDetailResponse viewDrugDetail(@RequestParam ViewDrugDetailRequest request){
+        return chemistDrugService.viewDrugDetail(request);
     }
 
     @GetMapping("/SearchDrug")
-    public SearchDrugResponse searchDrug(@RequestBody SearchDrugRequest searchDrugRequest){
-        return chemistDrugService.searchDrug(searchDrugRequest);
+    public SearchDrugResponse searchDrug(@RequestParam SearchDrugRequest request){
+        return chemistDrugService.searchDrug(request);
     }
 
     @DeleteMapping("/DeleteDrug")
-    public DeleteDrugResponse deleteDrug(@RequestBody DeleteDrugRequest deleteDrugRequest){
-        return chemistDrugService.deleteDrug(deleteDrugRequest);
+    public DeleteDrugResponse deleteDrug(@RequestParam DeleteDrugRequest request){
+        return chemistDrugService.deleteDrug(request);
     }
 
     @DeleteMapping("/DeleteAllDrug")
@@ -46,8 +53,7 @@ public class ChemistDrugManagementServiceController {
     }
 
     @GetMapping("/GetAmountOfDrugs")
-    public GetAmountOfDrugsResponse getAmountOfDrugs(@RequestBody GetAmountOfDrugsRequest getAmountOfDrugsRequest){
-        return chemistDrugService.getAmountOfDrugs(getAmountOfDrugsRequest);
+    public GetAmountOfDrugsResponse getAmountOfDrugs(){
+        return chemistDrugService.getAmountOfDrugs();
     }
-
 }

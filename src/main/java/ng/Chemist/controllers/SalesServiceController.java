@@ -5,6 +5,7 @@ import ng.Chemist.dtos.response.chemistSalesServiceResponse.sellDrugResponse;
 import ng.Chemist.service.ChemistSalesServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +16,7 @@ public class SalesServiceController {
     private ChemistSalesServiceImpl chemistSalesService;
 
     @PostMapping("/dispenseDrug")
-    public sellDrugResponse sellDrug(sellDrugRequest drugRequest){
+    public sellDrugResponse sellDrug(@RequestBody sellDrugRequest drugRequest){
         return chemistSalesService.sellDrug(drugRequest);
     }
 

@@ -13,6 +13,7 @@ import ng.Chemist.exceptions.ChemistSalesManagementExceptions.InsufficientStockE
 import ng.Chemist.exceptions.ChemistSalesManagementExceptions.UserNotLoggedInException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Component
+@Service
 public class ChemistSalesServiceImpl implements ChemistSalesService {
     @Autowired
     private DrugRepository drugRepository;

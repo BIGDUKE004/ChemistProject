@@ -1,0 +1,19 @@
+-------------------------------------------------------------------------------
+Test set: ng.Chemist.serviceTest.ChemistDrugManagementServiceTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 1, Errors: 1, Skipped: 0, Time elapsed: 29.42 s <<< FAILURE! -- in ng.Chemist.serviceTest.ChemistDrugManagementServiceTest
+ng.Chemist.serviceTest.ChemistDrugManagementServiceTest.chemistIsLoggedIn_ChemistChecksForTheListOfDrugsInTheSystem -- Time elapsed: 0.587 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <The Amount Of Drugs is 3> but was: <The Amount Of Drugs is 2>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:184)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:179)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1188)
+	at ng.Chemist.serviceTest.ChemistDrugManagementServiceTest.chemistIsLoggedIn_ChemistChecksForTheListOfDrugsInTheSystem(ChemistDrugManagementServiceTest.java:406)
+
+ng.Chemist.serviceTest.ChemistDrugManagementServiceTest.chemistIsLoggedIn_chemistAddsDrugToTheSystem -- Time elapsed: 0.020 s <<< ERROR!
+ng.Chemist.exceptions.AuthServiceExceptions.InvalidUserNameException: User Name Already Exist
+	at ng.Chemist.service.AuthServiceImpl.register(AuthServiceImpl.java:37)
+	at ng.Chemist.serviceTest.ChemistDrugManagementServiceTest.chemistIsLoggedIn_chemistAddsDrugToTheSystem(ChemistDrugManagementServiceTest.java:41)
+

@@ -4,8 +4,6 @@ import ng.Chemist.Data.model.Drug;
 import ng.Chemist.Data.repositories.DrugRepository;
 import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.*;
 import ng.Chemist.dtos.response.chemistDrugManagementServiceResponse.*;
-import ng.Chemist.dtos.request.chemistDrugManagementServiceRequest.*;
-import ng.Chemist.dtos.response.chemistDrugManagementServiceResponse.*;
 import ng.Chemist.exceptions.ChemistDrugManagementServiceException.FillInEveryInformationException;
 import ng.Chemist.exceptions.repositoriesException.DrugDoesNotExistException;
 import ng.Chemist.util.authServiceUtil.Mapper;
@@ -13,6 +11,7 @@ import ng.Chemist.util.ChemistDrugManagementServiceUtil.IsEmptyCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +22,7 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
     public ChemistDrugManagementServiceImpl(DrugRepository drugRepository){
         this.drugRepository = drugRepository;
     }
+
     @Override
     public AddDrugResponse addDrug(AddDrugRequest request) {
         AddDrugResponse response = new AddDrugResponse();
@@ -58,41 +58,6 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
             response.setMessage("Drug information updated successfully");
             return response;
         }
-//        response.setMessage("");
-//        return response;
-    }
-
-    @Override
-    public ViewDrugDetailResponse viewDrugDetail(ViewDrugDetailRequest request) {
-        Drug drug = this.drugRepository.searchByBrandName(request.getBrandName());
-        ViewDrugDetailResponse response = new ViewDrugDetailResponse();
-        response.setMessage(drug.toString());
-        return response;
-    }
-
-    @Override
-    public SearchDrugResponse searchDrug(SearchDrugRequest request) {
-        SearchDrugResponse searchDrugResponse = new SearchDrugResponse();
-        Drug drug = this.drugRepository.searchByGenericName(request.getGenericName());
-        if (drug == null) {
-            searchDrugResponse.setMessage("Drug not found");
-            return searchDrugResponse;
-        }
-        String message = drug.getGenericName() + " " + drug.getStrength() + " " + drug.getDosage();
-        searchDrugResponse.setMessage(message);
-        return searchDrugResponse;
-    }
-
-    @Override
-    public DeleteDrugResponse deleteDrug(DeleteDrugRequest request) {
-        DeleteDrugResponse deleteDrugResponse = new DeleteDrugResponse();
-        Drug drug = Mapper.mapToDeleteDrugRequestToDrug(request);
-        if(this.drugRepository.findById(drug.getId()).isEmpty()){
-            throw new DrugDoesNotExistException("Drug not found");
-        }
-        this.drugRepository.delete(drug);
-        deleteDrugResponse.setMessage("Drug deleted successfully");
-        return deleteDrugResponse;
     }
 
     @Override
@@ -108,13 +73,43 @@ public class ChemistDrugManagementServiceImpl implements ChemistDrugManagementSe
     }
 
     @Override
-    public GetAmountOfDrugsResponse getAmountOfDrugs(GetAmountOfDrugsRequest request) {
-        GetAmountOfDrugsResponse getAmountOfDrugsResponse = new GetAmountOfDrugsResponse();
-        if(request.isRequestSwitch() == true){
-            long count = this.drugRepository.count();
-            String message = "The Amount Of Drugs is " + count;
-            getAmountOfDrugsResponse.setMessage(message);
-        }
-        return getAmountOfDrugsResponse;
+    public List<Drug> getAllDrugs() {
+        return drugRepository.findAll();
+    }
+
+    @Override
+    public ViewDrugDetailResponse viewDrugDetail(ViewDrugDetailRequest request) {
+        Drug drug = drugRepository.findByBrandNameIgnoreCase(request.getBrandName())
+                .orElseThrow(() -> new DrugDoesNotExistException("Drug not found"));
+        ViewDrugDetailResponse response = new ViewDrugDetailResponse();
+        response.setDrug(drug);
+        response.setMessage("Drug found");
+        return response;
+    }
+
+    @Override
+    public SearchDrugResponse searchDrug(SearchDrugRequest request) {
+        List<Drug> drugs = drugRepository.findByGenericNameContainingIgnoreCase(request.getGenericName());
+        SearchDrugResponse response = new SearchDrugResponse();
+        response.setDrugs(drugs);
+        response.setMessage(drugs.isEmpty() ? "No drugs found" : drugs.size() + " drug(s) found");
+        return response;
+    }
+
+    @Override
+    public DeleteDrugResponse deleteDrug(DeleteDrugRequest request) {
+        Drug drug = drugRepository.findByBrandNameIgnoreCase(request.getBrandName())
+                .orElseThrow(() -> new DrugDoesNotExistException("Drug not found"));
+        drugRepository.delete(drug);
+        DeleteDrugResponse response = new DeleteDrugResponse();
+        response.setMessage("Drug deleted successfully");
+        return response;
+    }
+
+    @Override
+    public GetAmountOfDrugsResponse getAmountOfDrugs() {
+        GetAmountOfDrugsResponse response = new GetAmountOfDrugsResponse();
+        response.setMessage("The Amount Of Drugs is " + drugRepository.count());
+        return response;
     }
 }
