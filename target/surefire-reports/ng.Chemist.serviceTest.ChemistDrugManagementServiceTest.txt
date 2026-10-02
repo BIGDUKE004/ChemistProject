@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: ng.Chemist.serviceTest.ChemistDrugManagementServiceTest
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 23.48 s -- in ng.Chemist.serviceTest.ChemistDrugManagementServiceTest
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 24.50 s -- in ng.Chemist.serviceTest.ChemistDrugManagementServiceTest
