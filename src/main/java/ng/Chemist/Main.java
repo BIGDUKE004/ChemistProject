@@ -5,14 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Main {
-
     public static void main(String[] args) {
-
-        System.out.println(
-                "MONGODB_URI EXISTS: " +
-                        (System.getenv("MONGODB_URI") != null)
-        );
-
         SpringApplication.run(Main.class, args);
     }
 }
